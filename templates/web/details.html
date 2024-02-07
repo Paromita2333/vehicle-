@@ -1,0 +1,102 @@
+{% extends "web/layout/base.html" %}
+{%load static%}
+{%block title%}
+<title>Vehicle Management</title>
+{%endblock title%}
+{%block style%}
+<link rel="stylesheet" href="{% static 'website/css/splide.min.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/jquery.datetimepicker.min.css' %}">
+<script src="{% static 'website/js/splide.min.js' %}"></script>
+<script src="{% static 'website/js/jquery.datetimepicker.full.min.js' %}"></script>
+{%endblock%}
+{%block content%}
+
+{%if messages%}
+  {%for message in messages%}
+  <script type="text/javascript">
+      toastr["{{message.tags}}"]("{{message}}", "{{message.tags|upper}}");
+  </script>
+  {%endfor%}
+{%endif%}
+
+<div>
+  <div>
+    <main class="main">
+        <div style="padding: 10px 40px;">
+            <div class="row">
+                <div class="col-6">
+                    <section class="splide" aria-label="Splide Basic HTML Example" style="max-height: 800px;">
+                        <div class="splide__track">
+                              <ul class="splide__list">
+                                  <li class="splide__slide">
+                                    <img src="{{V.thumbnail.url}}" alt="t" style="width: 100%; height: 100%;"/>
+                                  </li>
+                                  {%for i in V.vehicleimage_set.all %}
+                                  <li class="splide__slide">
+                                    <img src="{{i.image.url}}" alt="t" style="width: 100%;"/>
+                                  </li>
+                                  {%endfor%}
+                              </ul>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-4">
+                    <p style="font-size: 25px;font-weight: bold;">{{V.name}}</p>
+                    <div style="padding-bottom: 20px;">
+                      {%for l in DL %}
+                      <span class="badge bg-primary me-2">{{l}}</span>
+                      {%endfor%}
+                    </div>
+                    <div class="row">
+                      <div class="col-6 p-2" style="background-color: khaki;">No of Passengers</div>
+                      <div class="col-6 p-2" style="background-color: beige;">{{V.capacity}}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6 p-2" style="background-color: powderblue;">Hourly Rate</div>
+                      <div class="col-6 p-2" style="background-color: paleturquoise;">{{V.hourly_rate}} Tk</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6 p-2" style="background-color: khaki;">Driver</div>
+                      <div class="col-6 p-2" style="background-color: beige;">{{V.driver.name}}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6 p-2" style="background-color: powderblue;">Contact</div>
+                      <div class="col-6 p-2" style="background-color: paleturquoise;">{{V.driver.contact_info}}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6 p-2" style="background-color: khaki;">License</div>
+                      <div class="col-6 p-2" style="background-color: beige;">{{V.driver.license_info}}</div>
+                    </div>
+                    {%if AA %}
+                    <p style="color: green; font-weight: bold; font-size: 18px; margin-top: 20px;">This vehicle will be available after {{AA}}</p>
+                    {%else%}
+                    <p style="color: green; font-weight: bold; font-size: 18px;margin-top: 20px;">This vehicle is available for rent now</p>
+                    {%endif%}
+                    <form method="post" autocomplete="off" style="background: #97a8ff;padding: 10px">
+                      {%csrf_token%}
+                      <p style="color: white;">Please let us know when you will need the vehicle</p>
+                      <label class="me-1">From </label>
+                      <input type="text" id="start" name="start" required class="me-2"/></br>
+                      <label class="me-3 mt-2">To&nbsp;&nbsp;</label>
+                      <input type="text" id="end" name="end" required/></br>
+                      <div style="color: white;">
+                        <input type="checkbox" name="a" id="a">
+                        I agree to the terms & conditions and will take reponsibilties for violating the policies.
+                      </div>
+                      <div class="ps-5 mt-3"><button class="btn btn-success">Request</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+  </div>
+</div>
+
+{%endblock%}
+{%block js%}
+<script>
+    new Splide( '.splide' ).mount();
+    jQuery('#start').datetimepicker({format:'Y-m-d H:i'});
+    jQuery('#end').datetimepicker({format:'Y-m-d H:i'});
+</script>
+{%endblock%}
